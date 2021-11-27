@@ -1,1 +1,138 @@
 LEVEL 2
+
+Video 1:
+- Organize the outliner:
+  - Select donut + Icing
+  - Press M and select new collection
+  - Repeat with the plane
+  - Repeat with cam and light
+- Create the first sprinkle
+  - UV sphere
+    - Segments: 12 (Low Res since it repeats so much will impact render times)
+    - Rings (6)
+    - Radius: 0.001m (1mm)
+    - Elongate:
+      - Select with X-ray + E with extrude so that it just elongates
+      - S - Z it'll taper the top so that it doesn't look so rounder at the tip
+      - Shade smooth so that it doesn't look so flat on the sides
+- Duplicate over the surface of the donut
+  - Select icing
+  - Select Particle pannel
+  - Hit + for a new ParticleSetting.
+    - Hair for static instance
+    - Render as Object
+    - Object
+      - Select the 1 sprinkle
+    - Adjust the size
+    - Change the rotation of the particles:
+      - Advance
+        - Rotation
+        - Orientation Axis -> Normal
+        - Randomize Phase
+    - Ensure they only show on top of the donut and not underneath
+      - Weight Paint
+      - Disable Particles so that the painting is faster (clicking monitor from the view port)
+      - Paint over the icing
+    - Link the paint to the particle distribution
+      - Vertex Groups
+        - Density Group
+
+Video 2:
+- Making the sprinkles diffent colors:
+  - Shading mode
+  - Select sprinkle to see in the node editor
+  - Add control:
+    - Shift + A -> input -> Object Info
+    - Link the Random to the Base color.
+      - At this point everything is grey and boring
+    - Shift A -> converter -> color ramp in between, use 5 colors.
+    - Change from linear to constant so that we do not get in between colors.
+  - Randomizing size:
+    - Create a new springle twice the size
+    - Select both, M -> move to collection
+    - Make the particle system to reference the collection
+    - We can bend some but using cmd + R and create a loop, scroll wheel and we bend it
+  - Add little color balls
+    - UV sphere Insert in the saem collection so that it gets applied to the top of the donut
+    - Use count and increase the importance of everything else.
+
+Video 3: 
+  - Find texture painting at the top.
+    - Will split the screen in two 
+    - The left side is the un wrapped texture.
+    - In there we click new
+      - Set the dimensions
+      - Give it a name
+    - We need to make it rectangular for whatever reason (he won't explain it too well)
+    - Currently the donut looks like purple meaning that's missing the texture. So we need to link it
+  - Open Shading 
+    - Shift + A -> Texture -> image texture
+    - connect the colors input and outputs.
+    - Image texture we just select the texture we just created above
+    - Now they're linked so the donut should look black on the right side as the texture on the left
+  - Save image separately than blend file
+  - N key opens the color pallette.
+  - We paint the donut same color as before
+  - We cound paint it white but it'll look too obvious that it's painted we actually want to paint with a texture
+  - Now we want to actually paint with a texture:
+    - left panel -> Texture Mask -> click new -> give it a name
+    - right panel -> Texture Panel -> brush mask -> find the texture -> type clouds
+    - left panel -> make mapping -> Random -> Makes the paining more natural
+  - We pain the actual donut:
+    - We change it to black on the left side
+    - Brush setting ->
+
+Video 4: Procedural Texturing 
+  - Shading mode, same we use for image painting.
+  - We want to add a "Procedural Texturing" computer generated
+  - ADDING INITIAL TEXTURE
+    - Shift + A -> Texture -> Noise Texture
+    - Edit -> preference -> Add ons -> node wrangler. This makes it so that you can more easily see what the node does to the render
+    - Control + shift + left click -> preview the node over the model
+    - We want to use the fac (factor, which initialy looks black and white) to drive the texture of the donut.
+  - MAKE TEXTURE UNIFORM
+  - Shif+ A -> input -> Texture Coordinate:  
+    - Object output into the vector noise texture.
+    - Change the scale on the noise texture
+  - ADD BUMP EFFECT
+    - Shift + A -> Vector -> Displacement
+    - Fac output from noice Texturing -> displacement node height input
+    - displacement node displacement output -> displacement input (of the material output)
+    - Use actual render mode to see the texture.
+  - MAKE THE DISPLACEMENT REAL (changes shape and size of mesh):
+    - Material properties on the right -> surface -> Displacement -> Displacement and Bump
+    - It'll look like a porkypine
+    - We reduce the scale of the displacement node until the texture looks adequate.
+    - Increate detail in the noise texture to get smaller details.
+
+Video 5: Improve on the Texturing.
+  - ADD LARGE SCALE DETAILS (Adding multiple textures)
+    - We added small bumps but now we want to add larger bumps which we can control by using another texture
+    - Duplicate the Noise Texture
+    - Output of Texture Coordinate into new vector noise texture
+    - Control + shift + left click
+    - Scale is 200 (vs 1500 on the previous one) this is what makes it bigger.
+    - Connect output of new noise texture into displacement node overrides the previous one so:
+  - MIXING BOTH TEXTURES INTO ONE OUPUT
+    - Shift + A -> color -> Mix RBG node
+    - Take the FAC from both noise textures and use them as input into the Mix node
+    - Color of the mix hooks into the Height input of the displacement
+    - The mix node we need to change the blend type to ADD -> fac to 1
+      - We want both textures simultaneously not a really a weighted mix
+  - MAKING THE LARGER NODE OUTPUT A BIT CLEANER:
+    - We'll be adding a color ramp only for the big bump node
+    - 
+    - Color ramp node, noise texture fac into fac input
+    - color output into the mixer
+    - simple linear RGB
+  - BUMPS SHOULD INFLUENCE THE COLOR TOO (in addition to size)
+    - WE could get the color output of the mixer and add it into the Principled BSDF but that only takes 1 color
+    - Insert another Mix RBG color node
+    - Output of the mix into the fac of the new mix
+    - Change the mix value to overlay
+    - choose a orangish darker color to see the texture better.
+  - FINAL SUGGESTIONS:
+    - Make the weight pain more random
+    - Add and RGM MIX mix in between the texture and the overlay in case we can to override the original texture painting.
+
+
